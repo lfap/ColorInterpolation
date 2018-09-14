@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2CD5D0C2214C539500755910 /* ChartBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CD5D0C1214C539500755910 /* ChartBar.xib */; };
+		2CD5D0C4214C544D00755910 /* ChartBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD5D0C3214C544D00755910 /* ChartBar.swift */; };
 		2CDF5D5E214B08DC0059B1BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDF5D5D214B08DC0059B1BD /* AppDelegate.swift */; };
 		2CDF5D60214B08DC0059B1BD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDF5D5F214B08DC0059B1BD /* ViewController.swift */; };
 		2CDF5D63214B08DC0059B1BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF5D61214B08DC0059B1BD /* Main.storyboard */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2CD5D0C1214C539500755910 /* ChartBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartBar.xib; sourceTree = "<group>"; };
+		2CD5D0C3214C544D00755910 /* ChartBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartBar.swift; sourceTree = "<group>"; };
 		2CDF5D5A214B08DC0059B1BD /* ColorInterpolation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorInterpolation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CDF5D5D214B08DC0059B1BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2CDF5D5F214B08DC0059B1BD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -63,6 +67,8 @@
 				2CDF5D64214B08DF0059B1BD /* Assets.xcassets */,
 				2CDF5D66214B08DF0059B1BD /* LaunchScreen.storyboard */,
 				2CDF5D69214B08DF0059B1BD /* Info.plist */,
+				2CD5D0C1214C539500755910 /* ChartBar.xib */,
+				2CD5D0C3214C544D00755910 /* ChartBar.swift */,
 			);
 			path = ColorInterpolation;
 			sourceTree = "<group>";
@@ -128,6 +134,7 @@
 				2CDF5D68214B08DF0059B1BD /* LaunchScreen.storyboard in Resources */,
 				2CDF5D65214B08DF0059B1BD /* Assets.xcassets in Resources */,
 				2CDF5D63214B08DC0059B1BD /* Main.storyboard in Resources */,
+				2CD5D0C2214C539500755910 /* ChartBar.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CD5D0C4214C544D00755910 /* ChartBar.swift in Sources */,
 				2CDF5D60214B08DC0059B1BD /* ViewController.swift in Sources */,
 				2CDF5D70214B0C240059B1BD /* UIColor-Interpolation.swift in Sources */,
 				2CDF5D5E214B08DC0059B1BD /* AppDelegate.swift in Sources */,

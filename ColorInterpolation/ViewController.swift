@@ -49,7 +49,7 @@ class ViewController: UIViewController {
     
     private var initialBarHeight: CGFloat {
         if progressiveHeight {
-            return view.frame.height * (1.0 / CGFloat(numberOfBars))
+            return (view.frame.height / 2) * (1.0 / CGFloat(numberOfBars))
         } else {
             return view.frame.height
         }
@@ -72,7 +72,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         progressiveHeight = true
-        spaceBetweenBars = 3
+        spaceBetweenBars = (view.frame.width / 2) / CGFloat(numberOfBars)
+        
         createView()
     }
 
@@ -102,10 +103,11 @@ class ViewController: UIViewController {
         }
     }
     
-    fileprivate func createBar(frame: CGRect, bgColor color: UIColor) -> UIView {
-        let view: UIView = UIView.init(frame: frame)
-        view.backgroundColor = color
-        return view
+    fileprivate func createBar(frame: CGRect, bgColor color: UIColor) -> ChartBar {
+        let chartBar: ChartBar = ChartBar(frame: frame)
+        chartBar.setColor(color)
+        chartBar.foregroundBar.backgroundColor = color
+        return chartBar
     }
     
     fileprivate func interpolateColor(forBarAt index: Int) -> UIColor {
