@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let numberOfBars: Int = 4
+    let numberOfBars: Int = 20
     
     lazy var chartSize: CGSize = {
         return view.frame.size
@@ -37,6 +37,33 @@ class ViewController: UIViewController {
         return availableWidth / CGFloat(numberOfBars)
     }()
     
+    lazy var progress: CGFloat = {
+        if numberOfBars > 3 {
+            return 2 / CGFloat(numberOfBars)
+        } else {
+            return 3 / CGFloat(numberOfBars)
+        }
+    }()
+    
+    private var progressiveHeight: Bool = false
+    
+    private var initialBarHeight: CGFloat {
+        if progressiveHeight {
+            return view.frame.height * (1.0 / CGFloat(numberOfBars))
+        } else {
+            return view.frame.height
+        }
+    }
+    
+    lazy var initialXPosition: CGFloat = {
+        return self.spaceBetweenBars
+    }()
+    
+    private var incrementalXPosition: CGFloat = 0.0
+    private var incrementalHeight: CGFloat = 0.0
+    
+    lazy var halfNumberOfBars: CGFloat = CGFloat(numberOfBars) / 2.0
+    
     // MARK: Colors
     let initialColor: UIColor = UIColor.red
     let middleColor: UIColor = UIColor.green
@@ -44,9 +71,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        spaceBetweenBars = 5
-        
+        progressiveHeight = true
+        spaceBetweenBars = 3
         createView()
     }
 
@@ -56,37 +82,47 @@ class ViewController: UIViewController {
     }
     
     func createView() {
-        
-        let barHeight: CGFloat = view.frame.height
-        
-        var xPosition: CGFloat = spaceBetweenBars
-        let progress: CGFloat = 1 / (CGFloat(numberOfBars) / 3)
+        incrementalXPosition = initialXPosition
+        incrementalHeight = initialBarHeight
         
         for i in 0..<numberOfBars {
+
+            incrementalHeight = barHeight(atIndex: i)
+
+            let frame = CGRect(x: incrementalXPosition,
+                               y: view.frame.height - incrementalHeight,
+                               width: barWidth,
+                               height: incrementalHeight)
+            let color = interpolateColor(forBarAt: i)
+            let bar = createBar(frame: frame, bgColor: color)
             
-            let rect = CGRect(x: xPosition, y: 0, width: barWidth, height: barHeight)
-            let bar = UIView(frame: rect)
+            incrementalXPosition += barWidth + spaceBetweenBars
             
-            var color: UIColor
-            
-            let halfInterpolation: CGFloat = CGFloat(numberOfBars) / 2.0
-            
-            if CGFloat(i) < halfInterpolation {
-//                let p = (progress * (1 / (CGFloat(numberOfBars) / 1.0))) * CGFloat(i)
-                color = UIColor.interpolate(from: initialColor, to: middleColor, with: progress * CGFloat(i))
-                
-            } else {
-//                let p = (progress * (1 / (CGFloat(numberOfBars) / 2.0))) * (CGFloat(i) - halfInterpolation)
-                color = UIColor.interpolate(from: middleColor, to: finalColor, with: progress * (CGFloat(i) / 2.0))
-                
-            }
-            
-            bar.backgroundColor = color
-            xPosition += barWidth + spaceBetweenBars
             view.addSubview(bar)
         }
     }
     
+    fileprivate func createBar(frame: CGRect, bgColor color: UIColor) -> UIView {
+        let view: UIView = UIView.init(frame: frame)
+        view.backgroundColor = color
+        return view
+    }
     
+    fileprivate func interpolateColor(forBarAt index: Int) -> UIColor {
+        let color: UIColor
+        
+        if CGFloat(index) < halfNumberOfBars {
+            color = UIColor.interpolate(from: initialColor, to: middleColor, with: progress * (CGFloat(index)))
+        } else {
+            color = UIColor.interpolate(from: middleColor, to: finalColor, with: progress * CGFloat(index - Int(halfNumberOfBars)))
+        }
+        return color
+    }
+    
+    fileprivate func barHeight(atIndex index: Int) -> CGFloat {
+        if progressiveHeight {
+            return initialBarHeight * CGFloat(index + 1)
+        }
+        return view.frame.height
+    }
 }
-
