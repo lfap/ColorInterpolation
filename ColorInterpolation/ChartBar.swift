@@ -14,6 +14,8 @@ class ChartBar: UIView {
     @IBOutlet weak var backgroundBar: UIView!
     @IBOutlet weak var foregroundBar: UIView!
     
+    @IBOutlet weak var equalsHeightConstraints: NSLayoutConstraint!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
@@ -45,5 +47,36 @@ class ChartBar: UIView {
     
     func setColor(_ color: UIColor) {
         foregroundBar.backgroundColor = color
+    }
+    
+    /// value between 0.0 and 1.0
+    func setHeightPercentage(_ value: CGFloat) {
+        
+        equalsHeightConstraints = equalsHeightConstraints.setMultiplier(multiplier: value)
+    }
+}
+
+extension NSLayoutConstraint {
+    func setMultiplier(multiplier: CGFloat) -> NSLayoutConstraint {
+        
+        NSLayoutConstraint.deactivate([self])
+        guard let firstItemUnwrapped = firstItem else {
+            return NSLayoutConstraint()
+        }
+        let newConstraint = NSLayoutConstraint(
+            item: firstItemUnwrapped,
+            attribute: firstAttribute,
+            relatedBy: relation,
+            toItem: secondItem,
+            attribute: secondAttribute,
+            multiplier: multiplier,
+            constant: constant)
+        
+        newConstraint.priority = priority
+        newConstraint.shouldBeArchived = self.shouldBeArchived
+        newConstraint.identifier = self.identifier
+        
+        NSLayoutConstraint.activate([newConstraint])
+        return newConstraint
     }
 }

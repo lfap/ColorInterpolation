@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C3A4E5E214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A4E5D214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift */; };
+		2C3A4E60214E8C3C00B8FF94 /* ProgressiveChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A4E5F214E8C3C00B8FF94 /* ProgressiveChart.swift */; };
+		2C3A4E62214E8DB100B8FF94 /* VC0.1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A4E61214E8DB100B8FF94 /* VC0.1.swift */; };
 		2CD5D0C2214C539500755910 /* ChartBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CD5D0C1214C539500755910 /* ChartBar.xib */; };
 		2CD5D0C4214C544D00755910 /* ChartBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD5D0C3214C544D00755910 /* ChartBar.swift */; };
 		2CDF5D5E214B08DC0059B1BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDF5D5D214B08DC0059B1BD /* AppDelegate.swift */; };
@@ -18,6 +21,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C3A4E5D214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveChartDataSource.swift; sourceTree = "<group>"; };
+		2C3A4E5F214E8C3C00B8FF94 /* ProgressiveChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveChart.swift; sourceTree = "<group>"; };
+		2C3A4E61214E8DB100B8FF94 /* VC0.1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VC0.1.swift; sourceTree = "<group>"; };
 		2CD5D0C1214C539500755910 /* ChartBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartBar.xib; sourceTree = "<group>"; };
 		2CD5D0C3214C544D00755910 /* ChartBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartBar.swift; sourceTree = "<group>"; };
 		2CDF5D5A214B08DC0059B1BD /* ColorInterpolation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorInterpolation.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,6 +47,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C3A4E5C214E8BAC00B8FF94 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				2C3A4E5D214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
 		2CDF5D51214B08DC0059B1BD = {
 			isa = PBXGroup;
 			children = (
@@ -60,15 +74,18 @@
 		2CDF5D5C214B08DC0059B1BD /* ColorInterpolation */ = {
 			isa = PBXGroup;
 			children = (
+				2C3A4E5C214E8BAC00B8FF94 /* Protocols */,
 				2CDF5D5D214B08DC0059B1BD /* AppDelegate.swift */,
 				2CDF5D6F214B0C240059B1BD /* UIColor-Interpolation.swift */,
 				2CDF5D5F214B08DC0059B1BD /* ViewController.swift */,
+				2C3A4E61214E8DB100B8FF94 /* VC0.1.swift */,
 				2CDF5D61214B08DC0059B1BD /* Main.storyboard */,
 				2CDF5D64214B08DF0059B1BD /* Assets.xcassets */,
 				2CDF5D66214B08DF0059B1BD /* LaunchScreen.storyboard */,
 				2CDF5D69214B08DF0059B1BD /* Info.plist */,
 				2CD5D0C1214C539500755910 /* ChartBar.xib */,
 				2CD5D0C3214C544D00755910 /* ChartBar.swift */,
+				2C3A4E5F214E8C3C00B8FF94 /* ProgressiveChart.swift */,
 			);
 			path = ColorInterpolation;
 			sourceTree = "<group>";
@@ -145,9 +162,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C3A4E60214E8C3C00B8FF94 /* ProgressiveChart.swift in Sources */,
 				2CD5D0C4214C544D00755910 /* ChartBar.swift in Sources */,
 				2CDF5D60214B08DC0059B1BD /* ViewController.swift in Sources */,
 				2CDF5D70214B0C240059B1BD /* UIColor-Interpolation.swift in Sources */,
+				2C3A4E62214E8DB100B8FF94 /* VC0.1.swift in Sources */,
+				2C3A4E5E214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift in Sources */,
 				2CDF5D5E214B08DC0059B1BD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

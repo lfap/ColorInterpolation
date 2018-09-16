@@ -15,6 +15,7 @@
             <connections>
                 <outlet property="backgroundBar" destination="QhM-rX-FIz" id="FQf-Ub-Vvr"/>
                 <outlet property="containerView" destination="iN0-l3-epB" id="8o0-ln-kCv"/>
+                <outlet property="equalsHeightConstraints" destination="scQ-EE-qKV" id="5wr-7n-if5"/>
                 <outlet property="foregroundBar" destination="hiV-lh-3Rt" id="IMG-tl-rig"/>
             </connections>
         </placeholder>
