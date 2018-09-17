@@ -71,7 +71,12 @@ class ProgressiveChart: UIView {
         }
     }()
     
-    private var progressiveHeight: Bool = false
+    /**
+        When true the bars are created with increasing height,
+        when false the bars are all created with the same height.
+        * The default value is false
+     */
+    var progressiveHeight: Bool = false
     
     private var initialBarHeight: CGFloat {
         
@@ -126,12 +131,13 @@ class ProgressiveChart: UIView {
     }()
     
     // MARK: Colors
-    let initialColor: UIColor = UIColor.red
-    let middleColor: UIColor = UIColor.green
-    let finalColor: UIColor = UIColor.red
+    private let initialColor: UIColor = UIColor.red
+    private let middleColor: UIColor = UIColor.green
+    private let finalColor: UIColor = UIColor.red
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = UIColor.clear
     }
     
     required init?(coder aDecoder: NSCoder) {

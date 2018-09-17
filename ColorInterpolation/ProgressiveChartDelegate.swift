@@ -11,7 +11,7 @@ import UIKit
 
 protocol ProgressiveChartDelegate: class {
 
-    func progressiveChartSpaceBetweenBars(forChart chart: ProgressiveChart) -> CGFloat
+    func progressiveChartSpaceBetweenBars(forChart chart: ProgressiveChart) -> CGFloat    
 }
 
 extension ProgressiveChartDelegate {

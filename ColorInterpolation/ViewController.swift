@@ -17,8 +17,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let chartFrame = CGRect(x: 0, y: view.frame.height / 4, width: view.frame.width, height: view.frame.height / 2)
+        let chartFrame = CGRect(x: 0, y: view.frame.height / 4, width: view.frame.width, height: view.frame.height * 0.75)
         progressiveChart = ProgressiveChart(frame: chartFrame)
+        
+        progressiveChart.progressiveHeight = true
         
         progressiveChart.set(dataSource: self, andDelegate: self)
         
@@ -51,6 +53,6 @@ extension ViewController: ProgressiveChartDataSource {
 
 extension ViewController: ProgressiveChartDelegate {
     func progressiveChartSpaceBetweenBars(forChart chart: ProgressiveChart) -> CGFloat {
-        return 5.0
+        return 10
     }
 }

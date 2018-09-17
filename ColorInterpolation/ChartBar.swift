@@ -32,6 +32,8 @@ class ChartBar: UIView {
     
     func commonInit() {
         Bundle.main.loadNibNamed("ChartBar", owner: self, options: nil)
+        containerView.backgroundColor = UIColor.clear
+        
         self.addSubview(containerView)
         self.containerView.frame = self.bounds
         self.containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
