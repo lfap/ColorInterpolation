@@ -27,10 +27,10 @@ class ProgressiveChart: UIView {
         guard numberOfSections > 0,
             let dataSourceUnwrapped = dataSource else { return 0 }
                 
-        for i in 0..<numberOfSections {
-            let numberOfBars = dataSourceUnwrapped.progressiveChartNumberOfBars(forChart: self, atSection: i)
+        for section in 0..<numberOfSections {
+            let numberOfBars = dataSourceUnwrapped.progressiveChartNumberOfBars(forChart: self, atSection: section)
             
-            numberOfBarsPerSection[i] = numberOfBars
+            numberOfBarsPerSection[section] = numberOfBars
         }
         
         return numberOfBarsPerSection.values.reduce(0, +)
@@ -57,6 +57,10 @@ class ProgressiveChart: UIView {
         return chartSize.width - totalGapsScpace
     }()
     
+    lazy var availableHeight: CGFloat = {
+        return frame.height - sectionSeparatorHeight
+    }()
+    
     lazy var barWidth: CGFloat = {
         return availableWidth / CGFloat(numberOfBars)
     }()
@@ -69,18 +73,26 @@ class ProgressiveChart: UIView {
         }
     }()
     
+    let sectionSeparatorHeight: CGFloat = 7.0
+    let spaceBetweenSeparatorAndBars: CGFloat = 2.0
+    
     private var progressiveHeight: Bool = false
     
     private var initialBarHeight: CGFloat {
+        
         if progressiveHeight {
-            return (frame.height / 2) * (1.0 / CGFloat(numberOfBars))
+            return (availableHeight / 2) * (1.0 / CGFloat(numberOfBars))
         } else {
-            return frame.height
+            return availableHeight
         }
     }
     
     lazy var initialXPosition: CGFloat = {
         return self.spaceBetweenBars
+    }()
+    
+    lazy var initialYPosition: CGFloat = {
+        return availableHeight - spaceBetweenSeparatorAndBars
     }()
     
     private var incrementalXPosition: CGFloat = 0.0
@@ -112,7 +124,7 @@ class ProgressiveChart: UIView {
             incrementalHeight = barHeight(atIndex: i)
             
             let frame = CGRect(x: incrementalXPosition,
-                               y: self.frame.height - incrementalHeight,
+                               y: initialYPosition - incrementalHeight,
                                width: barWidth,
                                height: incrementalHeight)
             let color = interpolateColor(forBarAt: i)
@@ -122,6 +134,8 @@ class ProgressiveChart: UIView {
             
             addSubview(bar)
         }
+        
+        drawSectionsSeparators()
     }
     
     fileprivate func createBar(frame: CGRect, bgColor color: UIColor) -> ChartBar {
@@ -146,8 +160,36 @@ class ProgressiveChart: UIView {
         if progressiveHeight {
             return initialBarHeight * CGFloat(index + 1)
         }
-        return frame.height
+        return frame.height - 7.0
+    }
+}
+
+fileprivate extension ProgressiveChart {
+    
+    func drawSectionsSeparators() {
+        
+        var x = initialXPosition
+        
+        for section in 0..<numberOfBarsPerSection.count {
+            
+            let bars = numberOfBarsAt(section: section)
+            
+            let lineWidth = barWidth * CGFloat(bars)
+
+            let lineRect: CGRect = CGRect(x: x,
+                                          y: availableHeight,
+                                          width: lineWidth,
+                                          height: sectionSeparatorHeight)
+            
+            let line = PCSectionSeparator(frame: lineRect)
+            
+            addSubview(line)
+            
+            x += lineWidth
+        }
     }
     
-    
+    func numberOfBarsAt(section: Int) -> Int {
+        return numberOfBarsPerSection[section] ?? 0
+    }
 }

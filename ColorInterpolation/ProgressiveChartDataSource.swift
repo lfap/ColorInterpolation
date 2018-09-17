@@ -12,7 +12,7 @@ protocol ProgressiveChartDataSource: class {
     
     func progressiveChartNumberOfSections(forChart chart: ProgressiveChart) -> Int
     
-    func progressiveChartNumberOfBars(forChart chart: ProgressiveChart, atSection: Int) -> Int
+    func progressiveChartNumberOfBars(forChart chart: ProgressiveChart, atSection section: Int) -> Int
     
     func progressiveChartTitleForSection(section: Int) -> String 
 }
