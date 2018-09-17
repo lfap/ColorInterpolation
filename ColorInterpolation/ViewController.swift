@@ -25,8 +25,8 @@ class ViewController: UIViewController {
         progressiveChart.set(dataSource: self, andDelegate: self)
         
         view.addSubview(progressiveChart)
-        
-        progressiveChart.setProgressAt(0.55)
+                    
+        progressiveChart.setProgressAt(0.5)
     }
 
     override func didReceiveMemoryWarning() {
@@ -37,13 +37,10 @@ class ViewController: UIViewController {
 
 extension ViewController: ProgressiveChartDataSource {
     func progressiveChartNumberOfSections(forChart chart: ProgressiveChart) -> Int {
-        //return titles.count
-        return 2
+        return titles.count
     }
     
     func progressiveChartNumberOfBars(forChart chart: ProgressiveChart, atSection section: Int) -> Int {
-        
-        return 5
         
         if section < 2 {
             return 4

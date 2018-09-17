@@ -1,5 +1,5 @@
 //
-//  PCSectionSeparator.swift
+//  SectionSeparator.swift
 //  ColorInterpolation
 //
 //  Created by Luiz Felipe Albernaz Pio on 17/09/18.
@@ -8,8 +8,7 @@
 
 import UIKit
 
-
-class PCSectionSeparator: UIView {
+class SectionSeparator: UIView {
     
     var path: UIBezierPath!
     

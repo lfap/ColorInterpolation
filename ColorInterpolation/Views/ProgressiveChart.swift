@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProgressiveChart: UIView {
+public class ProgressiveChart: UIView {
     
     fileprivate weak var dataSource: ProgressiveChartDataSource?
     fileprivate weak var delegate: ProgressiveChartDelegate?
@@ -22,7 +22,7 @@ class ProgressiveChart: UIView {
     
     private var numberOfBarsPerSection: [Int: Int] = [:]
     
-    lazy var numberOfBars: Int = {
+    fileprivate lazy var numberOfBars: Int = {
         guard numberOfSections > 0,
             let dataSourceUnwrapped = dataSource else { return 0 }
                 
@@ -35,11 +35,11 @@ class ProgressiveChart: UIView {
         return numberOfBarsPerSection.values.reduce(0, +)
     }()
     
-    var chartSize: CGSize {
+    fileprivate var chartSize: CGSize {
         return frame.size
     }
     
-    var spaceBetweenBars: CGFloat {
+    fileprivate var spaceBetweenBars: CGFloat {
         guard let delegateUnwrapped = delegate else { return 0.0 }
         var v = delegateUnwrapped.progressiveChartSpaceBetweenBars(forChart: self)
             let limitValue = chartSize.width / CGFloat(numberOfBars)
@@ -49,23 +49,23 @@ class ProgressiveChart: UIView {
         return v
     }
     
-    var totalGapsScpace: CGFloat {
+    fileprivate var totalGapsScpace: CGFloat {
         return spaceBetweenBars * CGFloat(numberOfBars + 1)
     }
     
-    var availableWidth: CGFloat {
+    fileprivate var availableWidth: CGFloat {
         return chartSize.width - totalGapsScpace
     }
     
-    var availableHeight: CGFloat {
+    fileprivate var availableHeight: CGFloat {
         return frame.height - sectionSeparatorHeight - titleLabelHeight
     }
     
-    lazy var barWidth: CGFloat = {
+    fileprivate lazy var barWidth: CGFloat = {
         return availableWidth / CGFloat(numberOfBars)
     }()
     
-    lazy var progress: CGFloat = {
+    fileprivate lazy var progress: CGFloat = {
         if numberOfBars > 3 {
             return 2 / CGFloat(numberOfBars)
         } else {
@@ -89,22 +89,22 @@ class ProgressiveChart: UIView {
         }
     }
     
-    var initialXPosition: CGFloat {
+    fileprivate var initialXPosition: CGFloat {
         return spaceBetweenBars
     }
     
-    lazy var initialYPosition: CGFloat = {
+    fileprivate lazy var initialYPosition: CGFloat = {
         return availableHeight - spaceBetweenSeparatorAndBars
     }()
     
     private var incrementalXPosition: CGFloat = 0.0
     private var incrementalHeight: CGFloat = 0.0
     
-    lazy var halfNumberOfBars: CGFloat = CGFloat(numberOfBars) / 2.0
+    fileprivate lazy var halfNumberOfBars: CGFloat = CGFloat(numberOfBars) / 2.0
     
     // MARK: Separators
     fileprivate let sectionSeparatorHeight: CGFloat = 7.0
-    let spaceBetweenSeparatorAndBars: CGFloat = 2.0
+    fileprivate let spaceBetweenSeparatorAndBars: CGFloat = 2.0
     
     fileprivate lazy var separatorsInitialYPosition: CGFloat = {
         return titleInitialYPosition - sectionSeparatorHeight
@@ -118,7 +118,7 @@ class ProgressiveChart: UIView {
         return frame.height - titleLabelHeight
     }()
     
-    lazy var titles: [String] = {
+    fileprivate lazy var titles: [String] = {
        
         guard numberOfSections > 0,
             let dataSourceUnwrapped = dataSource else { return [] }
@@ -133,27 +133,27 @@ class ProgressiveChart: UIView {
     }()
     
     // MARK: Colors
-    private let initialColor: UIColor = UIColor.red
-    private let middleColor: UIColor = UIColor.green
-    private let finalColor: UIColor = UIColor.red
+    let initialColor: UIColor = UIColor.red
+    let middleColor: UIColor = UIColor.green
+    let finalColor: UIColor = UIColor.red
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.clear
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         self.init()
     }
     
-    func set(dataSource: ProgressiveChartDataSource, andDelegate delegate: ProgressiveChartDelegate) {
+    public func set(dataSource: ProgressiveChartDataSource, andDelegate delegate: ProgressiveChartDelegate) {
         self.dataSource = dataSource
         self.delegate = delegate
         
         createView()
     }
     
-    func createView() {
+    fileprivate func createView() {
         
         incrementalXPosition = initialXPosition
         incrementalHeight = initialBarHeight
@@ -166,9 +166,7 @@ class ProgressiveChart: UIView {
                                y: initialYPosition - incrementalHeight,
                                width: barWidth,
                                height: incrementalHeight)
-            
-//            let color = interpolateColor(forBarAt: i)
-            
+                        
             let bar = createBar(frame: frame)
             
             incrementalXPosition += barWidth + spaceBetweenBars
@@ -215,7 +213,7 @@ class ProgressiveChart: UIView {
 //*******************************************************************************
 fileprivate extension ProgressiveChart {
     
-    func drawSectionsSeparators() {
+    fileprivate func drawSectionsSeparators() {
         
         var x = initialXPosition
         
@@ -232,7 +230,7 @@ fileprivate extension ProgressiveChart {
                                           width: lineWidth,
                                           height: sectionSeparatorHeight)
             
-            let line = PCSectionSeparator(frame: lineRect)
+            let line = SectionSeparator(frame: lineRect)
 
             addSubview(line)
             
@@ -240,7 +238,7 @@ fileprivate extension ProgressiveChart {
         }
     }
     
-    func numberOfBarsAt(section: Int) -> Int {
+    fileprivate func numberOfBarsAt(section: Int) -> Int {
         return numberOfBarsPerSection[section] ?? 0
     }
 }
@@ -251,7 +249,7 @@ fileprivate extension ProgressiveChart {
 //
 //*******************************************************************************
 fileprivate extension ProgressiveChart {
-    func setSectionsTitle() {
+    fileprivate func setSectionsTitle() {
         
         var xPosition = initialXPosition
         
@@ -287,7 +285,7 @@ fileprivate extension ProgressiveChart {
 //*******************************************************************************
 extension ProgressiveChart {
     
-    func setProgressAt(_ percentage: Double) {
+    public func setProgressAt(_ percentage: Double) {
         
         let percentageToWork: Double = max(0, min(percentage, 1))
         
@@ -301,6 +299,7 @@ extension ProgressiveChart {
             bar.setColor(color)
             bar.setHeightPercentage(1)
         }
+        
         let remainder: Double = (percentageToWork * 100)
             .truncatingRemainder(dividingBy: 10)
         
