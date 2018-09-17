@@ -58,7 +58,7 @@ class ProgressiveChart: UIView {
     }()
     
     lazy var availableHeight: CGFloat = {
-        return frame.height - sectionSeparatorHeight
+        return frame.height - sectionSeparatorHeight - titleLabelHeight
     }()
     
     lazy var barWidth: CGFloat = {
@@ -72,9 +72,6 @@ class ProgressiveChart: UIView {
             return 3 / CGFloat(numberOfBars)
         }
     }()
-    
-    let sectionSeparatorHeight: CGFloat = 7.0
-    let spaceBetweenSeparatorAndBars: CGFloat = 2.0
     
     private var progressiveHeight: Bool = false
     
@@ -99,6 +96,36 @@ class ProgressiveChart: UIView {
     private var incrementalHeight: CGFloat = 0.0
     
     lazy var halfNumberOfBars: CGFloat = CGFloat(numberOfBars) / 2.0
+    
+    // MARK: Separators
+    fileprivate let sectionSeparatorHeight: CGFloat = 7.0
+    let spaceBetweenSeparatorAndBars: CGFloat = 2.0
+    
+    fileprivate lazy var separatorsInitialYPosition: CGFloat = {
+        return titleInitialYPosition - sectionSeparatorHeight
+    }()
+    
+    // MARK: Titles
+    
+    fileprivate let titleLabelHeight: CGFloat = 15.0
+    
+    fileprivate lazy var titleInitialYPosition: CGFloat = {
+        return frame.height - titleLabelHeight
+    }()
+    
+    lazy var titles: [String] = {
+       
+        guard numberOfSections > 0,
+            let dataSourceUnwrapped = dataSource else { return [] }
+        
+        var titles: [String] = []
+        
+        for section in 0..<numberOfSections {
+            let title: String = dataSourceUnwrapped.progressiveChartTitleForSection(section: section)
+            titles.append(title)
+        }
+        return titles
+    }()
     
     // MARK: Colors
     let initialColor: UIColor = UIColor.red
@@ -136,6 +163,7 @@ class ProgressiveChart: UIView {
         }
         
         drawSectionsSeparators()
+        setSectionsTitle()
     }
     
     fileprivate func createBar(frame: CGRect, bgColor color: UIColor) -> ChartBar {
@@ -164,6 +192,11 @@ class ProgressiveChart: UIView {
     }
 }
 
+//*******************************************************************************
+//
+// MARK: - Separators Extension
+//
+//*******************************************************************************
 fileprivate extension ProgressiveChart {
     
     func drawSectionsSeparators() {
@@ -177,12 +210,12 @@ fileprivate extension ProgressiveChart {
             let lineWidth = barWidth * CGFloat(bars)
 
             let lineRect: CGRect = CGRect(x: x,
-                                          y: availableHeight,
+                                          y: separatorsInitialYPosition,
                                           width: lineWidth,
                                           height: sectionSeparatorHeight)
             
             let line = PCSectionSeparator(frame: lineRect)
-            
+
             addSubview(line)
             
             x += lineWidth
@@ -191,5 +224,38 @@ fileprivate extension ProgressiveChart {
     
     func numberOfBarsAt(section: Int) -> Int {
         return numberOfBarsPerSection[section] ?? 0
+    }
+}
+
+//*******************************************************************************
+//
+// MARK: - Ranges titles Extension
+//
+//*******************************************************************************
+fileprivate extension ProgressiveChart {
+    func setSectionsTitle() {
+        
+        var xPosition = initialXPosition
+        
+        for section in 0..<numberOfBarsPerSection.count {
+            
+            let bars = numberOfBarsAt(section: section)
+            
+            let labelWidth = barWidth * CGFloat(bars)
+            
+            let labelRect: CGRect = CGRect(x: xPosition,
+                                           y: titleInitialYPosition,
+                                           width: labelWidth,
+                                           height: 15.0)
+            
+            let titleLabel = UILabel(frame: labelRect)
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 12.5)
+            titleLabel.textAlignment = NSTextAlignment.center
+            titleLabel.text = titles[section]
+            
+            addSubview(titleLabel)
+            
+            xPosition += labelWidth
+        }
     }
 }
