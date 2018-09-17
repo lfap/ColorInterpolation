@@ -7,7 +7,16 @@
 //
 
 import Foundation
+import UIKit
 
 protocol ProgressiveChartDelegate: class {
 
+    func progressiveChartSpaceBetweenBars(forChart chart: ProgressiveChart) -> CGFloat
 }
+
+extension ProgressiveChartDelegate {
+    func progressiveChartSpaceBetweenBars(forChart chart: ProgressiveChart) -> CGFloat {
+        return 0.0
+    }
+}
+

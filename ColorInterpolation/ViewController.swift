@@ -19,12 +19,10 @@ class ViewController: UIViewController {
         
         let chartFrame = CGRect(x: 0, y: view.frame.height / 4, width: view.frame.width, height: view.frame.height / 2)
         progressiveChart = ProgressiveChart(frame: chartFrame)
-        progressiveChart.dataSource = self
         
-        progressiveChart.backgroundColor = UIColor.magenta
+        progressiveChart.set(dataSource: self, andDelegate: self)
         
         view.addSubview(progressiveChart)
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,7 +33,7 @@ class ViewController: UIViewController {
 
 extension ViewController: ProgressiveChartDataSource {
     func progressiveChartNumberOfSections(forChart chart: ProgressiveChart) -> Int {
-        return 4
+        return titles.count
     }
     
     func progressiveChartNumberOfBars(forChart chart: ProgressiveChart, atSection section: Int) -> Int {
@@ -48,5 +46,11 @@ extension ViewController: ProgressiveChartDataSource {
     
     func progressiveChartTitleForSection(section: Int) -> String {
         return titles[section]
+    }
+}
+
+extension ViewController: ProgressiveChartDelegate {
+    func progressiveChartSpaceBetweenBars(forChart chart: ProgressiveChart) -> CGFloat {
+        return 5.0
     }
 }

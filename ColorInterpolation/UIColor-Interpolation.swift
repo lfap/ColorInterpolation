@@ -1,9 +1,6 @@
 //
-//  UIColor-Interpolation.swift
-//  ColorInterpolation
-//
-//  Created by Luiz Felipe Albernaz Pio on 13/09/18.
-//  Copyright © 2018 Luiz Felipe Albernaz Pio. All rights reserved.
+//  UIColor+Interpolation.swift
+//  Created by Kyle Weiner on 2/29/16.
 //
 
 import UIKit

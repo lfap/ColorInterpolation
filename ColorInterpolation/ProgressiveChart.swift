@@ -10,11 +10,8 @@ import UIKit
 
 class ProgressiveChart: UIView {
     
-    weak var dataSource: ProgressiveChartDataSource? {
-        didSet {
-            createView()
-        }
-    }
+    fileprivate weak var dataSource: ProgressiveChartDataSource?
+    fileprivate weak var delegate: ProgressiveChartDelegate?
     
     lazy var numberOfSections: Int = {
         guard let dataSourceUnwrapped = dataSource else { return 0 }
@@ -36,30 +33,31 @@ class ProgressiveChart: UIView {
         return numberOfBarsPerSection.values.reduce(0, +)
     }()
     
-    lazy var chartSize: CGSize = {
+    var chartSize: CGSize {
         return frame.size
-    }()
-    
-    var spaceBetweenBars: CGFloat = 0.0 {
-        didSet {
-            let limitValue = chartSize.width / CGFloat(numberOfBars)
-            if spaceBetweenBars > limitValue {
-                spaceBetweenBars = limitValue
-            }
-        }
     }
     
-    lazy var totalGapsScpace: CGFloat = {
+    var spaceBetweenBars: CGFloat {
+        guard let delegateUnwrapped = delegate else { return 0.0 }
+        var v = delegateUnwrapped.progressiveChartSpaceBetweenBars(forChart: self)
+            let limitValue = chartSize.width / CGFloat(numberOfBars)
+            if v > limitValue {
+                v = limitValue
+            }
+        return v
+    }
+    
+    var totalGapsScpace: CGFloat {
         return spaceBetweenBars * CGFloat(numberOfBars + 1)
-    }()
+    }
     
-    lazy var availableWidth: CGFloat = {
+    var availableWidth: CGFloat {
         return chartSize.width - totalGapsScpace
-    }()
+    }
     
-    lazy var availableHeight: CGFloat = {
+    var availableHeight: CGFloat {
         return frame.height - sectionSeparatorHeight - titleLabelHeight
-    }()
+    }
     
     lazy var barWidth: CGFloat = {
         return availableWidth / CGFloat(numberOfBars)
@@ -84,9 +82,9 @@ class ProgressiveChart: UIView {
         }
     }
     
-    lazy var initialXPosition: CGFloat = {
-        return self.spaceBetweenBars
-    }()
+    var initialXPosition: CGFloat {
+        return spaceBetweenBars
+    }
     
     lazy var initialYPosition: CGFloat = {
         return availableHeight - spaceBetweenSeparatorAndBars
@@ -132,13 +130,19 @@ class ProgressiveChart: UIView {
     let middleColor: UIColor = UIColor.green
     let finalColor: UIColor = UIColor.red
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
     required init?(coder aDecoder: NSCoder) {
         self.init()
+    }
+    
+    func set(dataSource: ProgressiveChartDataSource, andDelegate delegate: ProgressiveChartDelegate) {
+        self.dataSource = dataSource
+        self.delegate = delegate
+        
+        createView()
     }
     
     func createView() {
@@ -206,8 +210,10 @@ fileprivate extension ProgressiveChart {
         for section in 0..<numberOfBarsPerSection.count {
             
             let bars = numberOfBarsAt(section: section)
+            let totalGapsWidth: CGFloat = spaceBetweenBars * CGFloat(bars - 1)
+            let totalBarsWidth: CGFloat = barWidth * CGFloat(bars)
             
-            let lineWidth = barWidth * CGFloat(bars)
+            let lineWidth = totalGapsWidth + totalBarsWidth
 
             let lineRect: CGRect = CGRect(x: x,
                                           y: separatorsInitialYPosition,
@@ -218,7 +224,7 @@ fileprivate extension ProgressiveChart {
 
             addSubview(line)
             
-            x += lineWidth
+            x += lineWidth + spaceBetweenBars
         }
     }
     
@@ -240,8 +246,10 @@ fileprivate extension ProgressiveChart {
         for section in 0..<numberOfBarsPerSection.count {
             
             let bars = numberOfBarsAt(section: section)
+            let totalGapsWidth: CGFloat = spaceBetweenBars * CGFloat(bars - 1)
+            let totalBarsWidth: CGFloat = barWidth * CGFloat(bars)
             
-            let labelWidth = barWidth * CGFloat(bars)
+            let labelWidth = totalGapsWidth + totalBarsWidth
             
             let labelRect: CGRect = CGRect(x: xPosition,
                                            y: titleInitialYPosition,
@@ -255,7 +263,7 @@ fileprivate extension ProgressiveChart {
             
             addSubview(titleLabel)
             
-            xPosition += labelWidth
+            xPosition += labelWidth + spaceBetweenBars
         }
     }
 }
