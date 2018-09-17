@@ -13,6 +13,8 @@ class ProgressiveChart: UIView {
     fileprivate weak var dataSource: ProgressiveChartDataSource?
     fileprivate weak var delegate: ProgressiveChartDelegate?
     
+    fileprivate var bars: [ChartBar] = []
+    
     lazy var numberOfSections: Int = {
         guard let dataSourceUnwrapped = dataSource else { return 0 }
         return dataSourceUnwrapped.progressiveChartNumberOfSections(forChart: self)
@@ -164,10 +166,14 @@ class ProgressiveChart: UIView {
                                y: initialYPosition - incrementalHeight,
                                width: barWidth,
                                height: incrementalHeight)
-            let color = interpolateColor(forBarAt: i)
-            let bar = createBar(frame: frame, bgColor: color)
+            
+//            let color = interpolateColor(forBarAt: i)
+            
+            let bar = createBar(frame: frame)
             
             incrementalXPosition += barWidth + spaceBetweenBars
+            
+            bars.append(bar)
             
             addSubview(bar)
         }
@@ -176,7 +182,7 @@ class ProgressiveChart: UIView {
         setSectionsTitle()
     }
     
-    fileprivate func createBar(frame: CGRect, bgColor color: UIColor) -> ChartBar {
+    fileprivate func createBar(frame: CGRect, bgColor color: UIColor = UIColor.clear) -> ChartBar {
         let chartBar: ChartBar = ChartBar(frame: frame)
         chartBar.setColor(color)
         chartBar.foregroundBar.backgroundColor = color
@@ -263,13 +269,48 @@ fileprivate extension ProgressiveChart {
                                            height: 15.0)
             
             let titleLabel = UILabel(frame: labelRect)
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 12.5)
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 10)
             titleLabel.textAlignment = NSTextAlignment.center
             titleLabel.text = titles[section]
             
             addSubview(titleLabel)
             
             xPosition += labelWidth + spaceBetweenBars
+        }
+    }
+}
+
+//*******************************************************************************
+//
+// MARK: - Progress Animation at Extension
+//
+//*******************************************************************************
+extension ProgressiveChart {
+    
+    func setProgressAt(_ percentage: Double) {
+        
+        let percentageToWork: Double = max(0, min(percentage, 1))
+        
+        let numberOfBarsToFill: Int = Int(floor(percentageToWork * Double(numberOfBars)))
+        
+        for (index, bar) in bars.enumerated() {
+            
+            if index == numberOfBarsToFill { break }
+            
+            let color = interpolateColor(forBarAt: index)
+            bar.setColor(color)
+            bar.setHeightPercentage(1)
+        }
+        let remainder: Double = (percentageToWork * 100)
+            .truncatingRemainder(dividingBy: 10)
+        
+        if remainder != 0 {
+            let lastBarToFill = bars[numberOfBarsToFill]
+            let color = interpolateColor(forBarAt: numberOfBarsToFill)
+            let barPercentage: CGFloat = CGFloat(remainder / 10)
+            
+            lastBarToFill.setColor(color)
+            lastBarToFill.setHeightPercentage(barPercentage)
         }
     }
 }
