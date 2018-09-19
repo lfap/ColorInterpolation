@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C1A0F332150406200E06BE9 /* NSLayoutConstraint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1A0F322150406200E06BE9 /* NSLayoutConstraint+Extension.swift */; };
 		2C3A4E5E214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A4E5D214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift */; };
 		2C3A4E60214E8C3C00B8FF94 /* ProgressiveChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A4E5F214E8C3C00B8FF94 /* ProgressiveChart.swift */; };
 		2C8D557C214EA03400CB1D02 /* ProgressiveChartDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D557B214EA03400CB1D02 /* ProgressiveChartDelegate.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C1A0F322150406200E06BE9 /* NSLayoutConstraint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Extension.swift"; sourceTree = "<group>"; };
 		2C3A4E5D214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveChartDataSource.swift; sourceTree = "<group>"; };
 		2C3A4E5F214E8C3C00B8FF94 /* ProgressiveChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveChart.swift; sourceTree = "<group>"; };
 		2C8D557B214EA03400CB1D02 /* ProgressiveChartDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveChartDelegate.swift; sourceTree = "<group>"; };
@@ -53,8 +55,18 @@
 			isa = PBXGroup;
 			children = (
 				2CDF5D6F214B0C240059B1BD /* UIColor-Interpolation.swift */,
+				2C1A0F322150406200E06BE9 /* NSLayoutConstraint+Extension.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		2C1A0F312150403C00E06BE9 /* ChartBar */ = {
+			isa = PBXGroup;
+			children = (
+				2CD5D0C1214C539500755910 /* ChartBar.xib */,
+				2CD5D0C3214C544D00755910 /* ChartBar.swift */,
+			);
+			name = ChartBar;
 			sourceTree = "<group>";
 		};
 		2C3A4E5C214E8BAC00B8FF94 /* Protocols */ = {
@@ -69,9 +81,8 @@
 		2C8D557D214FD2D100CB1D02 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2C1A0F312150403C00E06BE9 /* ChartBar */,
 				2C8D557E214FD2E400CB1D02 /* SectionSeparator.swift */,
-				2CD5D0C1214C539500755910 /* ChartBar.xib */,
-				2CD5D0C3214C544D00755910 /* ChartBar.swift */,
 				2C3A4E5F214E8C3C00B8FF94 /* ProgressiveChart.swift */,
 			);
 			path = Views;
@@ -141,6 +152,7 @@
 				TargetAttributes = {
 					2CDF5D59214B08DC0059B1BD = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -184,6 +196,7 @@
 				2C3A4E60214E8C3C00B8FF94 /* ProgressiveChart.swift in Sources */,
 				2CD5D0C4214C544D00755910 /* ChartBar.swift in Sources */,
 				2CDF5D60214B08DC0059B1BD /* ViewController.swift in Sources */,
+				2C1A0F332150406200E06BE9 /* NSLayoutConstraint+Extension.swift in Sources */,
 				2CDF5D70214B0C240059B1BD /* UIColor-Interpolation.swift in Sources */,
 				2C3A4E5E214E8BDF00B8FF94 /* ProgressiveChartDataSource.swift in Sources */,
 				2C8D557F214FD2E400CB1D02 /* SectionSeparator.swift in Sources */,
@@ -341,7 +354,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.lfap.ColorInterpolation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -359,7 +372,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.lfap.ColorInterpolation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

@@ -29,7 +29,7 @@ class SectionSeparator: UIView {
         path.stroke()
     }
     
-    func createSectionSeparator() {
+    fileprivate func createSectionSeparator() {
         path = UIBezierPath()
         
         path.lineWidth = 1.5

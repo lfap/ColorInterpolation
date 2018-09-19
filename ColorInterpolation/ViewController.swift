@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let chartFrame = CGRect(x: 0, y: view.frame.height / 4, width: view.frame.width, height: view.frame.height * 0.75)
+        let chartFrame = CGRect(x: 0, y: view.frame.height / 4, width: 331, height: 220.5)
         progressiveChart = ProgressiveChart(frame: chartFrame)
         
         progressiveChart.progressiveHeight = true
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         
         view.addSubview(progressiveChart)
                     
-        progressiveChart.setProgressAt(0.5)
+        progressiveChart.setTotalProgressAt(0.5)
     }
 
     override func didReceiveMemoryWarning() {

@@ -25,7 +25,7 @@ public class ProgressiveChart: UIView {
     fileprivate lazy var numberOfBars: Int = {
         guard numberOfSections > 0,
             let dataSourceUnwrapped = dataSource else { return 0 }
-                
+        
         for section in 0..<numberOfSections {
             let numberOfBars = dataSourceUnwrapped.progressiveChartNumberOfBars(forChart: self, atSection: section)
             
@@ -35,6 +35,23 @@ public class ProgressiveChart: UIView {
         return numberOfBarsPerSection.values.reduce(0, +)
     }()
     
+    fileprivate lazy var colorBars: [UIColor] = {
+        
+        guard numberOfSections > 0,
+            let delegateUnwrapped = delegate else { return [] }
+        
+        var colors: [UIColor] = []
+        for section in 0..<numberOfSections  {
+            guard let barsCount = numberOfBarsPerSection[section],
+                barsCount > 0 else { return [] }
+            for bar in 0..<barsCount {
+                let color: UIColor = delegateUnwrapped.progressiveChartColorForBar(chart: self, atSection: section, inIndex: bar)
+                colors.append(color)
+            }
+        }
+        return colors
+    }()
+    
     fileprivate var chartSize: CGSize {
         return frame.size
     }
@@ -42,10 +59,10 @@ public class ProgressiveChart: UIView {
     fileprivate var spaceBetweenBars: CGFloat {
         guard let delegateUnwrapped = delegate else { return 0.0 }
         var v = delegateUnwrapped.progressiveChartSpaceBetweenBars(forChart: self)
-            let limitValue = chartSize.width / CGFloat(numberOfBars)
-            if v > limitValue {
-                v = limitValue
-            }
+        let limitValue = chartSize.width / CGFloat(numberOfBars)
+        if v > limitValue {
+            v = limitValue
+        }
         return v
     }
     
@@ -74,16 +91,16 @@ public class ProgressiveChart: UIView {
     }()
     
     /**
-        When true the bars are created with increasing height,
-        when false the bars are all created with the same height.
-        * The default value is false
+     When true the bars are created with increasing height,
+     when false the bars are all created with the same height.
+     * The default value is false
      */
     var progressiveHeight: Bool = false
     
     private var initialBarHeight: CGFloat {
         
         if progressiveHeight {
-            return (availableHeight / 2) * (1.0 / CGFloat(numberOfBars))
+            return (availableHeight * 0.9) * (1.0 / CGFloat(numberOfBars))
         } else {
             return availableHeight
         }
@@ -119,7 +136,7 @@ public class ProgressiveChart: UIView {
     }()
     
     fileprivate lazy var titles: [String] = {
-       
+        
         guard numberOfSections > 0,
             let dataSourceUnwrapped = dataSource else { return [] }
         
@@ -133,9 +150,9 @@ public class ProgressiveChart: UIView {
     }()
     
     // MARK: Colors
-    let initialColor: UIColor = UIColor.red
+    let initialColor: UIColor = UIColor(red: 140/255, green: 74/255, blue: 14/255, alpha: 1)
     let middleColor: UIColor = UIColor.green
-    let finalColor: UIColor = UIColor.red
+    let finalColor: UIColor = UIColor.black
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -146,7 +163,7 @@ public class ProgressiveChart: UIView {
         self.init()
     }
     
-    public func set(dataSource: ProgressiveChartDataSource, andDelegate delegate: ProgressiveChartDelegate) {
+    func set(dataSource: ProgressiveChartDataSource, andDelegate delegate: ProgressiveChartDelegate) {
         self.dataSource = dataSource
         self.delegate = delegate
         
@@ -166,7 +183,7 @@ public class ProgressiveChart: UIView {
                                y: initialYPosition - incrementalHeight,
                                width: barWidth,
                                height: incrementalHeight)
-                        
+            
             let bar = createBar(frame: frame)
             
             incrementalXPosition += barWidth + spaceBetweenBars
@@ -224,14 +241,14 @@ fileprivate extension ProgressiveChart {
             let totalBarsWidth: CGFloat = barWidth * CGFloat(bars)
             
             let lineWidth = totalGapsWidth + totalBarsWidth
-
+            
             let lineRect: CGRect = CGRect(x: x,
                                           y: separatorsInitialYPosition,
                                           width: lineWidth,
                                           height: sectionSeparatorHeight)
             
             let line = SectionSeparator(frame: lineRect)
-
+            
             addSubview(line)
             
             x += lineWidth + spaceBetweenBars
@@ -267,6 +284,8 @@ fileprivate extension ProgressiveChart {
                                            height: 15.0)
             
             let titleLabel = UILabel(frame: labelRect)
+            titleLabel.adjustsFontSizeToFitWidth = true
+            titleLabel.minimumScaleFactor = 0.5
             titleLabel.font = UIFont.boldSystemFont(ofSize: 10)
             titleLabel.textAlignment = NSTextAlignment.center
             titleLabel.text = titles[section]
@@ -285,31 +304,45 @@ fileprivate extension ProgressiveChart {
 //*******************************************************************************
 extension ProgressiveChart {
     
-    public func setProgressAt(_ percentage: Double) {
+    //0.0 - 1.0
+    public func setTotalProgressAt(_ percentage: Double) {
         
         let percentageToWork: Double = max(0, min(percentage, 1))
         
-        let numberOfBarsToFill: Int = Int(floor(percentageToWork * Double(numberOfBars)))
+        let numberOfBarsFraction: Double = percentageToWork * Double(numberOfBars)
+        let numberOfBarsIntegerToFill: Int = Int(floor(numberOfBarsFraction))
         
         for (index, bar) in bars.enumerated() {
             
-            if index == numberOfBarsToFill { break }
+            if index == numberOfBarsIntegerToFill { break }
             
-            let color = interpolateColor(forBarAt: index)
-            bar.setColor(color)
+            bar.setColor(colorBars[index])
             bar.setHeightPercentage(1)
         }
         
-        let remainder: Double = (percentageToWork * 100)
-            .truncatingRemainder(dividingBy: 10)
+        let remainder: Double = (numberOfBarsFraction)
+            .truncatingRemainder(dividingBy: Double(numberOfBarsIntegerToFill))
         
-        if remainder != 0 {
-            let lastBarToFill = bars[numberOfBarsToFill]
-            let color = interpolateColor(forBarAt: numberOfBarsToFill)
-            let barPercentage: CGFloat = CGFloat(remainder / 10)
+        if remainder != 0 && !remainder.isNaN {
+            let lastBarToFill = bars[numberOfBarsIntegerToFill]
+            let barPercentage: CGFloat = CGFloat(remainder)
             
-            lastBarToFill.setColor(color)
+            lastBarToFill.setColor(colorBars[numberOfBarsIntegerToFill])
             lastBarToFill.setHeightPercentage(barPercentage)
         }
+    }
+    
+    func setProgress(forSection section: Int, atPercentage percentage: Double) {
+        
+        let sectionToWork = max(0, min(section, numberOfSections - 1))
+        let percentageToWork: Double = max(0, min(percentage, 1))
+        
+        var sumOfBars: Int = Int(floor(Double(numberOfBarsAt(section: sectionToWork)) * percentageToWork))
+        
+        for sec in 0..<sectionToWork {
+            sumOfBars += numberOfBarsAt(section: sec)
+        }
+        
+        setTotalProgressAt(Double(sumOfBars) / 20.0)
     }
 }

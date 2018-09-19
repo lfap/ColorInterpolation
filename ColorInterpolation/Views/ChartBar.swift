@@ -30,7 +30,7 @@ class ChartBar: UIView {
         super.layoutSubviews()
     }
     
-    func commonInit() {
+    private func commonInit() {
         Bundle.main.loadNibNamed("ChartBar", owner: self, options: nil)
         containerView.backgroundColor = UIColor.clear
         
@@ -55,30 +55,5 @@ class ChartBar: UIView {
     func setHeightPercentage(_ value: CGFloat) {
         
         equalsHeightConstraints = equalsHeightConstraints.setMultiplier(multiplier: value)
-    }
-}
-
-extension NSLayoutConstraint {
-    func setMultiplier(multiplier: CGFloat) -> NSLayoutConstraint {
-        
-        NSLayoutConstraint.deactivate([self])
-        guard let firstItemUnwrapped = firstItem else {
-            return NSLayoutConstraint()
-        }
-        let newConstraint = NSLayoutConstraint(
-            item: firstItemUnwrapped,
-            attribute: firstAttribute,
-            relatedBy: relation,
-            toItem: secondItem,
-            attribute: secondAttribute,
-            multiplier: multiplier,
-            constant: constant)
-        
-        newConstraint.priority = priority
-        newConstraint.shouldBeArchived = self.shouldBeArchived
-        newConstraint.identifier = self.identifier
-        
-        NSLayoutConstraint.activate([newConstraint])
-        return newConstraint
     }
 }
