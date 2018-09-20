@@ -54,6 +54,13 @@ class ChartBar: UIView {
     /// value between 0.0 and 1.0
     func setHeightPercentage(_ value: CGFloat) {
         
-        equalsHeightConstraints = equalsHeightConstraints.setMultiplier(multiplier: value)
+        let newConstraint = equalsHeightConstraints.setMultiplier(multiplier: value)
+        removeConstraint(equalsHeightConstraints)
+
+        addConstraint(newConstraint)
+        equalsHeightConstraints = newConstraint
+        
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 }

@@ -14,6 +14,8 @@ public class ProgressiveChart: UIView {
     fileprivate weak var delegate: ProgressiveChartDelegate?
     
     fileprivate var bars: [ChartBar] = []
+    fileprivate var sectionSeparators: [SectionSeparator] = []
+    fileprivate var sectionTitles: [UILabel] = []
     
     lazy var numberOfSections: Int = {
         guard let dataSourceUnwrapped = dataSource else { return 0 }
@@ -41,7 +43,7 @@ public class ProgressiveChart: UIView {
             let delegateUnwrapped = delegate else { return [] }
         
         var colors: [UIColor] = []
-        for section in 0..<numberOfSections  {
+        for section in 0..<numberOfSections {
             guard let barsCount = numberOfBarsPerSection[section],
                 barsCount > 0 else { return [] }
             for bar in 0..<barsCount {
@@ -133,6 +135,17 @@ public class ProgressiveChart: UIView {
     
     fileprivate lazy var titleInitialYPosition: CGFloat = {
         return frame.height - titleLabelHeight
+    }()
+    
+    // MARK: - Alpha value for unused sections
+    fileprivate lazy var alphaValueForUnusedSections: CGFloat = {
+        guard let delegateUnwrapped = delegate else { return 0.5 }
+        
+        let value = delegateUnwrapped.progressiveChartAlphaForUnusedSections(chat: self)
+
+        let valueFixed = max(0.0, min(value, 1.0))
+        
+        return valueFixed
     }()
     
     fileprivate lazy var titles: [String] = {
@@ -234,7 +247,7 @@ fileprivate extension ProgressiveChart {
         
         var x = initialXPosition
         
-        for section in 0..<numberOfBarsPerSection.count {
+        for section in 0..<numberOfSections {
             
             let bars = numberOfBarsAt(section: section)
             let totalGapsWidth: CGFloat = spaceBetweenBars * CGFloat(bars - 1)
@@ -248,6 +261,8 @@ fileprivate extension ProgressiveChart {
                                           height: sectionSeparatorHeight)
             
             let line = SectionSeparator(frame: lineRect)
+            
+            sectionSeparators.append(line)
             
             addSubview(line)
             
@@ -290,6 +305,10 @@ fileprivate extension ProgressiveChart {
             titleLabel.textAlignment = NSTextAlignment.center
             titleLabel.text = titles[section]
             
+            titleLabel.textColor = delegate?.progressiveChartColorForTitle(chat: self, atSection: section)
+            
+            sectionTitles.append(titleLabel)
+            
             addSubview(titleLabel)
             
             xPosition += labelWidth + spaceBetweenBars
@@ -304,13 +323,27 @@ fileprivate extension ProgressiveChart {
 //*******************************************************************************
 extension ProgressiveChart {
     
-    //0.0 - 1.0
+    private func resetAlphas() {
+        bars.forEach { $0.alpha = 1.0 }
+        sectionSeparators.forEach { $0.alpha = 1.0 }
+        sectionTitles.forEach { $0.alpha = 1.0 }
+    }
+    
+    /**
+     Set the chart filled at certain percentage as a whole
+     
+     - percentage: the percentage value between 0.0 and 1.0 to set the chart
+     
+     e.g: if you pass 0.5 half of the chart will be colored
+     */
     public func setTotalProgressAt(_ percentage: Double) {
         
-        let percentageToWork: Double = max(0, min(percentage, 1))
+        resetAlphas()
+        
+        let percentageToWork: Double = max(0.0, min(percentage, 1.0))
         
         let numberOfBarsFraction: Double = percentageToWork * Double(numberOfBars)
-        let numberOfBarsIntegerToFill: Int = Int(floor(numberOfBarsFraction))
+        let numberOfBarsIntegerToFill: Int = min(Int(floor(numberOfBarsFraction)), 19)
         
         for (index, bar) in bars.enumerated() {
             
@@ -320,16 +353,20 @@ extension ProgressiveChart {
             bar.setHeightPercentage(1)
         }
         
-        let remainder: Double = (numberOfBarsFraction)
+        var remainder: Double = (numberOfBarsFraction)
             .truncatingRemainder(dividingBy: Double(numberOfBarsIntegerToFill))
         
-        if remainder != 0 && !remainder.isNaN {
-            let lastBarToFill = bars[numberOfBarsIntegerToFill]
-            let barPercentage: CGFloat = CGFloat(remainder)
-            
-            lastBarToFill.setColor(colorBars[numberOfBarsIntegerToFill])
-            lastBarToFill.setHeightPercentage(barPercentage)
+        if remainder.isNaN {
+            remainder = numberOfBarsFraction
         }
+        
+        let lastBarToFill = bars[numberOfBarsIntegerToFill]
+        let barPercentage: CGFloat = CGFloat(remainder)
+        
+        lastBarToFill.setColor(colorBars[numberOfBarsIntegerToFill])
+        lastBarToFill.setHeightPercentage(barPercentage)
+        
+        setAlphaForUnusedSections(percentage: percentageToWork)
     }
     
     func setProgress(forSection section: Int, atPercentage percentage: Double) {
@@ -337,12 +374,49 @@ extension ProgressiveChart {
         let sectionToWork = max(0, min(section, numberOfSections - 1))
         let percentageToWork: Double = max(0, min(percentage, 1))
         
-        var sumOfBars: Int = Int(floor(Double(numberOfBarsAt(section: sectionToWork)) * percentageToWork))
+        var numberOfBarsToFillFraction: Double = Double(numberOfBarsAt(section: sectionToWork)) * percentageToWork
         
         for sec in 0..<sectionToWork {
-            sumOfBars += numberOfBarsAt(section: sec)
+            numberOfBarsToFillFraction += Double(numberOfBarsAt(section: sec))
         }
         
-        setTotalProgressAt(Double(sumOfBars) / 20.0)
+        let percentageToSet: Double = numberOfBarsToFillFraction / 20.0
+        
+        setTotalProgressAt(percentageToSet)
+    }
+    
+    private func setAlphaForUnusedSections(percentage: Double) {
+        
+        let numberOfBarsToFill: Int = Int(ceil(percentage * Double(numberOfBars)))
+        
+        var sumOfBarsPerSectionUsed: Int = 0
+        var lastUsedSection: Int = numberOfSections
+        
+        for section in 0..<numberOfSections {
+            
+            sumOfBarsPerSectionUsed += numberOfBarsAt(section: section)
+            
+            if sumOfBarsPerSectionUsed >= numberOfBarsToFill {
+                lastUsedSection = section
+                break
+            }
+        }
+        
+        if lastUsedSection < (numberOfSections - 1) {
+            let firstInactiveSection = lastUsedSection + 1
+            
+            for section in firstInactiveSection..<numberOfSections {
+                sectionSeparators[section].alpha = alphaValueForUnusedSections
+                sectionTitles[section].alpha = alphaValueForUnusedSections
+            }
+        }
+        
+        setAlphaForUnusedBars(numberOfBarsToFill: numberOfBarsToFill)
+    }
+    
+    private func setAlphaForUnusedBars(numberOfBarsToFill: Int) {
+        for barIndex in numberOfBarsToFill..<numberOfBars {
+            bars[barIndex].alpha = alphaValueForUnusedSections
+        }
     }
 }
